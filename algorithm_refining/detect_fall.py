@@ -4,7 +4,7 @@ import os
 
 def detect_fall(file_path):
     # change file path to however data is being accessed by frontend
-    with open('input_files/' + file_path, 'r') as file:
+    with open(file_path, 'r') as file:
          data = json.load(file)
     
     time = np.array([entry['timestamp'] for entry in data])
@@ -27,3 +27,6 @@ for input_file in input_files:
 
 print(f"Correct: {correct}, Incorrect: {incorrect}")
 '''
+
+print(detect_fall('test_files/test_fall.json'))
+print(detect_fall('test_files/test_nonfall.json'))
