@@ -46,7 +46,7 @@ def main():
         axs[0].set_ylim(0, 150)
         axs[0].set_xlim(-5000, 5000)
         axs[0].set_title('Overall Acceleration vs Time')
-        axs[0].set_ylabel('Overall Acceleration')
+        axs[0].set_ylabel('Overall Acceleration (m/s^2)')
         axs[0].set_xlabel('Time (ms)')
         axs[0].grid(True)
 
