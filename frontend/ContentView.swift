@@ -2,7 +2,6 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var isMonitoring = false
-    @State private var lastFallDate: Date? = nil
     @State private var navigateToFallDetected = false
     @EnvironmentObject var motionManager: MotionManager
 
@@ -20,7 +19,6 @@ struct ContentView: View {
                 HStack {
                     Spacer()
                     Button(action: {
-                        lastFallDate = Date()
                         navigateToFallDetected = true
                     }) {
                         Text("I Fell")
@@ -42,17 +40,19 @@ struct ContentView: View {
                         .bold()
                         .foregroundColor(.white)
 
-                    if let date = lastFallDate {
+                    if let date = motionManager.lastFallDate {
                         Text("Date: \(date.formatted(date: .abbreviated, time: .standard))")
                             .foregroundColor(.white)
-                            .font(.system(size: 24))
+                            .font(.system(size: 25))
+                            .lineLimit(nil)
+                            .fixedSize(horizontal: false, vertical: true)
                     } else {
                         Text("No falls detected yet.")
                             .foregroundColor(Color(hex: 0xF0ECEB))
                     }
                 }
                 .padding()
-                .frame(maxWidth: .infinity, maxHeight: 100, alignment: .leading)
+                .frame(maxWidth: .infinity, maxHeight: 150, alignment: .leading)
                 .background(Color(hex: 0x66A7C5))
                 .cornerRadius(12)
                 .padding(.horizontal)
@@ -106,4 +106,5 @@ struct MainTabView: View {
 
 #Preview {
     ContentView()
+    .environmentObject(MotionManager())
 }
