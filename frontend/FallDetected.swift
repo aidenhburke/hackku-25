@@ -50,7 +50,7 @@ struct FallDetectionView: View {
             Text("FALL DETECTED")
                 .font(.system(size: 45))
                 .bold()
-                .foregroundColor(Color(hex: 0x66A7C5))
+                .foregroundColor(Color(hex: 0xEE3233))
                 .padding(.top, 40)
 
             Spacer()
@@ -59,7 +59,7 @@ struct FallDetectionView: View {
                 Text("Emergency Contacts Notified")
                     .font(.system(size: 35))
                     .multilineTextAlignment(.center)
-                    .foregroundColor(Color(hex: 0x66A7C5))
+                    .foregroundColor(Color(hex: 0xEE3233))
                     .padding(.top, 0)
             } else {
                 Text("\(timeRemaining)")
@@ -72,7 +72,7 @@ struct FallDetectionView: View {
 
             VStack(spacing: 20) {
                 Button(action: {
-                    print("User confirmed a real fall")
+                    motionManager.lastFallDate = Date()
                     logFallEvent()
                     motionManager.fallDetected = false
                     motionManager.startMonitoring()
@@ -90,7 +90,6 @@ struct FallDetectionView: View {
                 }
 
                 Button(action: {
-                    print("User confirmed no fall")
                     motionManager.fallDetected = false
                     motionManager.startMonitoring()
                     invalidateTimer()
@@ -139,6 +138,7 @@ struct FallDetectionView: View {
     }
 
     private func invalidateTimer() {
+        motionManager.lastFallDate = Date()
         timer?.invalidate()
         timer = nil
     }
