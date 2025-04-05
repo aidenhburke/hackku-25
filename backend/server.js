@@ -7,7 +7,13 @@ const connectDB = require("./config/db"); //Import MongoDB connection
 require("dotenv").config(); //Load variable from .env
 
 const app = express(); //init express
-app.use(cors()); //For allowing request from swift app
+app.use(
+  cors({
+    origin: "*", // Allow all origins. Replace '*' with your Swift app URL if needed for security.
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 app.use(express.json()); //Pasring incoming JSON requests
 
 connectDB(); //connect to MongoDB
@@ -19,6 +25,16 @@ app.use("/api/contacts", require("./routes/contacts"));
 //defines a route for / to get rid of vercel error message
 app.get("/", (req, res) => {
   res.send("Backend is running successfully.");
+});
+
+app.post("/api/fall_events", (req, res) => {
+  // Handle fall event data
+  res.json({ message: "Fall event received successfully." });
+});
+
+app.get("/api/fall_events", (req, res) => {
+  // Retrieve fall event data from the database
+  res.json({ message: "Returning fall events." });
 });
 
 //Sever on port 3000
