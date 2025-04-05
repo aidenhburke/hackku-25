@@ -3,65 +3,71 @@ import SwiftUI
 struct ContentView: View {
     @State private var isMonitoring = false
     @State private var lastFallDate: Date? = nil
+    @State private var navigateToFallDetected = false
     @EnvironmentObject var motionManager: MotionManager
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 24) {
-            // Title
-            Text("SafeStep")
-                .font(.system(size: 50))
-                .bold()
-                .foregroundColor(Color(hex: 0xEE3233))
-                .padding(.horizontal)
-            
-            Spacer()
-            
-            HStack {
-                Spacer()
-                Button(action: {
-                    motionManager.fallDetected = true
-                    let newFallDate = Date()
-                    self.lastFallDate = newFallDate
-                }) {
-                    Text("I Fell")
-                        .font(.system(size: 70))
-                        .fontWeight(.bold)
-                        .padding()
-                        .frame(width: 300, height: 300)
-                        .foregroundColor(.white)
-                        .background(Color(hex: 0xEE3233))
-                        .clipShape(Circle())
-                }
-                Spacer()
-            }
-            .padding(.bottom, 50)
-
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Last Fall Detected")
-                    .font(.system(size: 30))
+        NavigationStack {
+            VStack(alignment: .leading, spacing: 24) {
+                Text("SafeStep")
+                    .font(.system(size: 50))
                     .bold()
-                    .foregroundColor(.white)
-                Spacer()
-                if let date = lastFallDate {
-                    Text("Date: \(date.formatted(date: .abbreviated, time: .standard))")
-                        .foregroundColor(.white)
-                        .font(.system(size: 24))
-                } else {
-                    Text("No falls detected yet.")
-                        .foregroundColor(Color(hex: 0xF0ECEB))
-                }
-            }
-            .padding()
-            .frame(maxWidth: .infinity, maxHeight: 100, alignment: .leading)
-            .background(Color(hex: 0x66A7C5))
-            .cornerRadius(12)
-            .padding(.horizontal)
+                    .foregroundColor(Color(hex: 0xEE3233))
+                    .padding(.horizontal)
 
-            Spacer()
+                Spacer()
+
+                HStack {
+                    Spacer()
+                    Button(action: {
+                        lastFallDate = Date()
+                        navigateToFallDetected = true
+                    }) {
+                        Text("I Fell")
+                            .font(.system(size: 70))
+                            .fontWeight(.bold)
+                            .padding()
+                            .frame(width: 300, height: 300)
+                            .foregroundColor(.white)
+                            .background(Color(hex: 0xEE3233))
+                            .clipShape(Circle())
+                    }
+                    Spacer()
+                }
+                .padding(.bottom, 50)
+
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Last Fall Detected")
+                        .font(.system(size: 30))
+                        .bold()
+                        .foregroundColor(.white)
+
+                    if let date = lastFallDate {
+                        Text("Date: \(date.formatted(date: .abbreviated, time: .standard))")
+                            .foregroundColor(.white)
+                            .font(.system(size: 24))
+                    } else {
+                        Text("No falls detected yet.")
+                            .foregroundColor(Color(hex: 0xF0ECEB))
+                    }
+                }
+                .padding()
+                .frame(maxWidth: .infinity, maxHeight: 100, alignment: .leading)
+                .background(Color(hex: 0x66A7C5))
+                .cornerRadius(12)
+                .padding(.horizontal)
+
+                Spacer()
+            }
+            .padding(.top)
+            .background(Color(hex: 0xCEEBFB))
+            .preferredColorScheme(.dark)
+            // 👇 This is the modern way to push to a destination
+            .navigationDestination(isPresented: $navigateToFallDetected) {
+                FallDetectionView()
+                    .environmentObject(motionManager)
+            }
         }
-        .padding(.top)
-        .background(Color(hex: 0xCEEBFB))
-        .preferredColorScheme(.dark)
     }
 }
 

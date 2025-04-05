@@ -70,6 +70,7 @@ struct FallDetectionView: View {
         .background((Color(hex: 0xCEEBFB)))
         .onAppear {
             startTimer()
+            motionManager.stopMonitoring()
         }
         .onDisappear {
             motionManager.startMonitoring()
