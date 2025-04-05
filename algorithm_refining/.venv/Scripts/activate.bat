@@ -8,7 +8,7 @@ if defined _OLD_CODEPAGE (
     "%SystemRoot%\System32\chcp.com" 65001 > nul
 )
 
-set VIRTUAL_ENV=C:\Users\aiden\Documents\Projects\hackku25\.venv
+set VIRTUAL_ENV=C:\Users\aiden\Documents\Github\hackku-25\algorithm_refining\.venv
 
 if not defined PROMPT set PROMPT=$P$G
 
