@@ -115,7 +115,6 @@ struct FallDetectionView: View {
         }
         .onDisappear {
             motionManager.startMonitoring()
-            invalidateTimer()
         }
     }
 
@@ -128,6 +127,7 @@ struct FallDetectionView: View {
                 timeRemaining -= 1
             } else {
                 timerExpired = true
+                motionManager.lastFallDate = Date()
                 invalidateTimer()
                 print("Timer expired. Fall detection process needs review.")
                 motionManager.stopMonitoring()
@@ -138,7 +138,6 @@ struct FallDetectionView: View {
     }
 
     private func invalidateTimer() {
-        motionManager.lastFallDate = Date()
         timer?.invalidate()
         timer = nil
     }
