@@ -33,110 +33,134 @@ struct SettingsView: View {
     @StateObject private var locationManager = LocationManager()
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 20) {
-            Text("Settings")
-                .foregroundColor(.white)
-                .font(.largeTitle)
-                .bold()
-                .padding(.horizontal)
+        ScrollView {
+            VStack(alignment: .leading, spacing: 24) {
+                Text("Settings")
+                    .foregroundColor(.white)
+                    .font(.largeTitle)
+                    .bold()
+                    .padding(.horizontal)
 
-            VStack(alignment: .leading, spacing: 12) {
-                HStack {
-                    Circle()
-                        .fill(notificationsEnabled ? Color.green : Color.red)
-                        .frame(width: 12, height: 12)
-                    Text("Notifications")
-                        .foregroundColor(.white)
-                        .font(.headline)
-                    Spacer()
-                    Button("Manage") {
-                        if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
-                            UIApplication.shared.open(settingsURL)
-                        }
-                    }
-                    .foregroundColor(.purple)
-                }
-
-                VStack(alignment: .leading) {
-                    HStack {
-                        Circle()
-                            .fill(locationStatus == .authorizedAlways || locationStatus == .authorizedWhenInUse ? Color.green : Color.orange)
-                            .frame(width: 12, height: 12)
-                        Text("Location Access")
-                            .foregroundColor(.white)
-                            .font(.headline)
-                        Spacer()
-                        Button("Manage") {
-                            if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
-                                UIApplication.shared.open(settingsURL)
+                VStack(alignment: .leading, spacing: 24) {
+                    // Notifications
+                    VStack(alignment: .leading, spacing: 14) {
+                        HStack {
+                            Circle()
+                                .fill(notificationsEnabled ? Color.green : Color.red)
+                                .frame(width: 18, height: 18)
+                            Text("Notifications")
+                                .foregroundColor(.white)
+                                .font(.title2)
+                            Spacer()
+                            Button("Manage") {
+                                openAppSettings()
                             }
+                            .foregroundColor(.purple)
                         }
-                        .foregroundColor(.purple)
-                    }
-                    if locationStatus != .authorizedAlways && locationStatus != .authorizedWhenInUse {
-                        Text("Limited or no access – open Settings to allow full location access.")
+                        Text("We use notifications to alert you of important safety messages and status updates.")
+                            .font(.body)
                             .foregroundColor(.gray)
-                            .font(.caption)
-                            .padding(.top, 2)
+                            .padding(.trailing)
                     }
-                }
+                    .padding()
+                    .background(Color(.systemGray5).opacity(0.3))
+                    .cornerRadius(16)
 
-                HStack {
-                    Circle()
-                        .fill(systemCanVibrate ? Color.green : Color.red)
-                        .frame(width: 12, height: 12)
-                    Text("Alert Vibration")
-                        .foregroundColor(.white)
-                        .font(.headline)
-                    Spacer()
-                    Button("Manage") {
-                        if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
-                            UIApplication.shared.open(settingsURL)
+                    // Location
+                    VStack(alignment: .leading, spacing: 14) {
+                        HStack {
+                            Circle()
+                                .fill(locationStatus == .authorizedAlways || locationStatus == .authorizedWhenInUse ? Color.green : Color.orange)
+                                .frame(width: 18, height: 18)
+                            Text("Location Access")
+                                .foregroundColor(.white)
+                                .font(.title2)
+                            Spacer()
+                            Button("Manage") {
+                                openAppSettings()
+                            }
+                            .foregroundColor(.purple)
+                        }
+                        Text("Location data helps us detect falls and provide accurate emergency location support.")
+                            .font(.body)
+                            .foregroundColor(.gray)
+                            .padding(.trailing)
+                        if locationStatus != .authorizedAlways && locationStatus != .authorizedWhenInUse {
+                            Text("Limited or no access – open Settings to allow full location access.")
+                                .foregroundColor(.gray)
+                                .font(.body)
+                                .padding(.top, 4)
                         }
                     }
-                    .foregroundColor(.purple)
-                }
+                    .padding()
+                    .background(Color(.systemGray5).opacity(0.3))
+                    .cornerRadius(16)
 
-                HStack {
-                    Circle()
-                        .fill(contactsAccessGranted ? Color.green : Color.red)
-                        .frame(width: 12, height: 12)
-                    Text("Contacts Access")
-                        .foregroundColor(.white)
-                        .font(.headline)
-                    Spacer()
-                    Button("Manage") {
-                        if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
-                            UIApplication.shared.open(settingsURL)
+                    // Alert Vibration
+                    VStack(alignment: .leading, spacing: 14) {
+                        HStack {
+                            Circle()
+                                .fill(systemCanVibrate ? Color.green : Color.red)
+                                .frame(width: 18, height: 18)
+                            Text("Alert Vibration")
+                                .foregroundColor(.white)
+                                .font(.title2)
+                            Spacer()
+                            Button("Manage") {
+                                openAppSettings()
+                            }
+                            .foregroundColor(.purple)
                         }
+                        Text("Vibrations are used to ensure that critical alerts reach you even when sound is off.")
+                            .font(.body)
+                            .foregroundColor(.gray)
+                            .padding(.trailing)
                     }
-                    .foregroundColor(.purple)
+                    .padding()
+                    .background(Color(.systemGray5).opacity(0.3))
+                    .cornerRadius(16)
+
+                    // Contacts Access
+                    VStack(alignment: .leading, spacing: 14) {
+                        HStack {
+                            Circle()
+                                .fill(contactsAccessGranted ? Color.green : Color.red)
+                                .frame(width: 18, height: 18)
+                            Text("Contacts Access")
+                                .foregroundColor(.white)
+                                .font(.title2)
+                            Spacer()
+                            Button("Manage") {
+                                openAppSettings()
+                            }
+                            .foregroundColor(.purple)
+                        }
+                        Text("We use your contacts to notify emergency contacts when a fall or alert is detected.")
+                            .font(.body)
+                            .foregroundColor(.gray)
+                            .padding(.trailing)
+                    }
+                    .padding()
+                    .background(Color(.systemGray5).opacity(0.3))
+                    .cornerRadius(16)
                 }
+                .padding(.horizontal)
             }
-            .padding()
-            .background(Color(.systemGray5).opacity(0.2))
-            .cornerRadius(12)
-            .padding(.horizontal)
-
-            Spacer()
+            .padding(.top)
         }
-        .padding(.top)
         .onAppear {
             if !hasRequestedPermissions {
                 hasRequestedPermissions = true
 
-                // Request Notification Permission
-                UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
+                UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, _ in
                     DispatchQueue.main.async {
                         self.notificationsEnabled = granted
                     }
                 }
 
-                // Request Location Permission
                 locationManager.requestPermission()
 
-                // Request Contacts Permission
-                CNContactStore().requestAccess(for: .contacts) { granted, error in
+                CNContactStore().requestAccess(for: .contacts) { granted, _ in
                     DispatchQueue.main.async {
                         self.contactsAccessGranted = granted
                     }
@@ -153,15 +177,15 @@ struct SettingsView: View {
             self.locationStatus = status
             self.locationTracking = status == .authorizedWhenInUse || status == .authorizedAlways
 
-            CNContactStore().requestAccess(for: .contacts) { granted, _ in
-                DispatchQueue.main.async {
-                    self.contactsAccessGranted = granted
-                }
-            }
-
             self.systemCanVibrate = true
         }
         .background(Color.black.ignoresSafeArea())
         .preferredColorScheme(.dark)
+    }
+
+    func openAppSettings() {
+        if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
+            UIApplication.shared.open(settingsURL)
+        }
     }
 }
