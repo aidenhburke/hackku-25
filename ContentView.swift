@@ -67,21 +67,6 @@ struct ContentView: View {
     }
 }
 
-struct SettingsView: View {
-    var body: some View {
-        VStack {
-            Text("Settings Page")
-                .foregroundColor(.white)
-                .font(.title)
-                .padding()
-            Spacer()
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.black.ignoresSafeArea())
-        .preferredColorScheme(.dark)
-    }
-}
-
 struct ContactsView: View {
     var body: some View {
         VStack {
