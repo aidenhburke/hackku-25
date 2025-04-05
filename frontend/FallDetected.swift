@@ -1,44 +1,6 @@
 import SwiftUI
 import UserNotifications
 
-struct FallEvent: Codable {
-    var date: String
-    var description: String
-}
-
-func sendFallEvent(fallEvent: FallEvent) {
-    guard let url = URL(string: "https://fall-detection-backend-marktmaloney-mark-maloneys-projects.vercel.app/api/fall_events") else { return }
-
-    var request = URLRequest(url: url)
-    request.httpMethod = "POST"
-    request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-
-    let encoder = JSONEncoder()
-    do {
-        let jsonData = try encoder.encode(fallEvent)
-        request.httpBody = jsonData
-    } catch {
-        print("Failed to encode fall event: \(error)")
-        return
-    }
-
-    URLSession.shared.dataTask(with: request) { data, response, error in
-        if let error = error {
-            print("Error: \(error)")
-            return
-        }
-
-        guard let data = data else {
-            print("No data received.")
-            return
-        }
-
-        if let responseString = String(data: data, encoding: .utf8) {
-            print("Response: \(responseString)")
-        }
-    }.resume()
-}
-
 struct FallDetectionView: View {
     @State private var timeRemaining = 30
     @State private var timer: Timer? = nil
@@ -74,7 +36,6 @@ struct FallDetectionView: View {
             VStack(spacing: 20) {
                 Button(action: {
                     motionManager.lastFallDate = Date()
-                    logFallEvent()
                     motionManager.fallDetected = false
                     motionManager.startMonitoring()
                     invalidateTimer()
@@ -109,7 +70,7 @@ struct FallDetectionView: View {
             .padding(.bottom, 40)
         }
         .padding()
-        .background((Color(hex: 0xCEEBFB)))
+        .background(Color(hex: 0xCEEBFB))
         .onAppear {
             startTimer()
             motionManager.stopMonitoring()
@@ -121,32 +82,41 @@ struct FallDetectionView: View {
 
     private func startTimer() {
         timerExpired = false
-        timeRemaining = 30
+
+        if let startedDate = motionManager.timerStartedDate {
+            let elapsed = Int(Date().timeIntervalSince(startedDate))
+            timeRemaining = max(30 - elapsed, 0)
+        } else {
+            timeRemaining = 30
+            motionManager.timerStartedDate = Date()
+        }
+
+        if timeRemaining <= 0 {
+            handleTimerExpiration()
+            return
+        }
 
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
             if timeRemaining > 0 {
                 timeRemaining -= 1
             } else {
-                timerExpired = true
-                motionManager.lastFallDate = Date()
-                invalidateTimer()
-                print("Timer expired. Fall detection process needs review.")
-                motionManager.stopMonitoring()
-                logFallEvent()
-                sendTimeoutNotification()
-                dismiss()
+                handleTimerExpiration()
             }
         }
+    }
+
+    private func handleTimerExpiration() {
+        timerExpired = true
+        motionManager.lastFallDate = Date()
+        invalidateTimer()
+        motionManager.stopMonitoring()
+        sendTimeoutNotification()
+        dismiss()
     }
 
     private func invalidateTimer() {
         timer?.invalidate()
         timer = nil
-    }
-
-    private func logFallEvent() {
-        let fallEvent = FallEvent(date: "\(Date())", description: "Fall detected by app")
-        sendFallEvent(fallEvent: fallEvent)
     }
 
     private func sendTimeoutNotification() {
@@ -170,4 +140,3 @@ struct FallDetectionView: View {
     FallDetectionView()
         .environmentObject(MotionManager())
 }
-
