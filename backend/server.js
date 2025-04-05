@@ -16,6 +16,11 @@ connectDB(); //connect to MongoDB
 app.use("/api/fall_events", require("./routes/fallEvents"));
 app.use("/api/contacts", require("./routes/contacts"));
 
+//defines a route for / to get rid of vercel error message
+app.get("/", (req, res) => {
+  res.send("Backend is running successfully.");
+});
+
 //Sever on port 3000
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
