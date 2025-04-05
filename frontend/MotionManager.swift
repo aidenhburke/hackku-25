@@ -2,15 +2,18 @@ import Foundation
 import CoreMotion
 import Combine
 import UserNotifications
+import UIKit
 
 class MotionManager: ObservableObject {
     private let motionManager = CMMotionManager()
-    private var timer: Timer?
+    private var monitorTimer: Timer?
+    private var backgroundTask: UIBackgroundTaskIdentifier = .invalid
     private var hasSentFallNotification = false
 
     @Published var fallDetected = false
     @Published var accelerometerAvailable = true
     @Published var lastFallDate: Date? = nil
+    @Published var timerStartedDate: Date? = nil
     private let accelerationThreshold = 25.0
 
     func startMonitoring() {
@@ -24,7 +27,7 @@ class MotionManager: ObservableObject {
         motionManager.accelerometerUpdateInterval = 0.1
         motionManager.startAccelerometerUpdates()
 
-        timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
+        monitorTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
             if let data = self.motionManager.accelerometerData {
                 let x = data.acceleration.x * 9.8
                 let y = data.acceleration.y * 9.8
@@ -40,6 +43,7 @@ class MotionManager: ObservableObject {
                         if !self.fallDetected {
                             self.fallDetected = true
                             self.lastFallDate = Date()
+                            self.timerStartedDate = Date()
                             self.stopMonitoring()
                             if !self.hasSentFallNotification {
                                 self.hasSentFallNotification = true
@@ -54,12 +58,21 @@ class MotionManager: ObservableObject {
                 }
             }
         }
+
+        backgroundTask = UIApplication.shared.beginBackgroundTask(withName: "MotionMonitoring") {
+            UIApplication.shared.endBackgroundTask(self.backgroundTask)
+            self.backgroundTask = .invalid
+        }
     }
 
     func stopMonitoring() {
         motionManager.stopAccelerometerUpdates()
-        timer?.invalidate()
-        timer = nil
+        monitorTimer?.invalidate()
+        monitorTimer = nil
+        if backgroundTask != .invalid {
+            UIApplication.shared.endBackgroundTask(backgroundTask)
+            backgroundTask = .invalid
+        }
     }
 
     private func sendFallDetectedNotification() {
@@ -82,3 +95,4 @@ class MotionManager: ObservableObject {
         }
     }
 }
+
