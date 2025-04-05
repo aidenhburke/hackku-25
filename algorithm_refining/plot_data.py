@@ -67,7 +67,7 @@ def main():
         extrema_idx = np.sort(np.concatenate((max_idx, min_idx)))
         extrema_points = list(zip(time[extrema_idx], norm[extrema_idx]))
 
-        if 'fall' in input_file.lower():
+        if '_fall' in input_file.lower():
             fall_extrema.extend(extrema_points)
         else:
             non_fall_extrema.extend(extrema_points)
