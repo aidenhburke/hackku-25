@@ -38,7 +38,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="C:\Users\aiden\Documents\Projects\hackku25\.venv"
+VIRTUAL_ENV="C:\Users\aiden\Documents\Github\hackku-25\algorithm_refining\.venv"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"

@@ -10,6 +10,7 @@ def main():
     fall_extrema = []
     non_fall_extrema = []
 
+
     for input_file in input_files:
         with open('input_files/' + input_file, 'r') as file:
             data = json.load(file)
@@ -91,11 +92,10 @@ def main():
     plt.savefig('output_files/all_extrema_summary.png')
     plt.show()
 
-    '''
-    change the figures to instaed of displaying the entire sensor data, isolate the highest point of acceleration
-    which is the global max and then plot that point in the center at t = 0 and the the rest either around it or 
-    only 4000 ms in either direction
-    '''
+    
+    
+
+    
 
 if __name__ == '__main__':
     main()
