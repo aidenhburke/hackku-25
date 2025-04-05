@@ -1,10 +1,49 @@
 import SwiftUI
 
+struct FallEvent: Codable {
+    var date: String
+    var description: String
+}
+
+func sendFallEvent(fallEvent: FallEvent) {
+    guard let url = URL(string: "https://fall-detection-backend-marktmaloney-mark-maloneys-projects.vercel.app/api/fall_events") else { return }
+
+    var request = URLRequest(url: url)
+    request.httpMethod = "POST"
+    request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+    let encoder = JSONEncoder()
+    do {
+        let jsonData = try encoder.encode(fallEvent)
+        request.httpBody = jsonData
+    } catch {
+        print("Failed to encode fall event: \(error)")
+        return
+    }
+
+    URLSession.shared.dataTask(with: request) { data, response, error in
+        if let error = error {
+            print("Error: \(error)")
+            return
+        }
+
+        guard let data = data else {
+            print("No data received.")
+            return
+        }
+
+        if let responseString = String(data: data, encoding: .utf8) {
+            print("Response: \(responseString)")
+        }
+    }.resume()
+}
+
 struct FallDetectionView: View {
     @State private var timeRemaining = 30 // Timer set for 30 seconds
     @State private var timer: Timer? = nil
     @State private var timerExpired = false
     @EnvironmentObject var motionManager: MotionManager
+    @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         VStack(spacing: 20) {
@@ -28,15 +67,17 @@ struct FallDetectionView: View {
                     .foregroundColor(Color(hex: 0x66A7C5))
                     .padding(.top, 0)
             }
-            
+
             Spacer()
 
             VStack(spacing: 20) {
                 Button(action: {
                     print("User confirmed a real fall")
+                    logFallEvent()
                     motionManager.fallDetected = false
                     motionManager.startMonitoring()
                     invalidateTimer()
+                    dismiss()
                 }) {
                     Text("Fall")
                         .font(.system(size: 70))
@@ -53,6 +94,7 @@ struct FallDetectionView: View {
                     motionManager.fallDetected = false
                     motionManager.startMonitoring()
                     invalidateTimer()
+                    dismiss()
                 }) {
                     Text("Not a Fall")
                         .font(.system(size: 70))
@@ -78,7 +120,6 @@ struct FallDetectionView: View {
         }
     }
 
-    // Start the timer
     private func startTimer() {
         timerExpired = false
         timeRemaining = 30
@@ -90,20 +131,26 @@ struct FallDetectionView: View {
                 timerExpired = true
                 invalidateTimer()
                 print("Timer expired. Fall detection process needs review.")
-                // Optionally, stop monitoring after the timer expires
                 motionManager.stopMonitoring()
+                logFallEvent()
+                dismiss()
             }
         }
     }
 
-    // Invalidate the timer when done
     private func invalidateTimer() {
         timer?.invalidate()
         timer = nil
+    }
+
+    private func logFallEvent() {
+        let fallEvent = FallEvent(date: "\(Date())", description: "Fall detected by app")
+        sendFallEvent(fallEvent: fallEvent)
     }
 }
 
 #Preview {
     FallDetectionView()
-    .environmentObject(MotionManager())
+        .environmentObject(MotionManager())
 }
+
