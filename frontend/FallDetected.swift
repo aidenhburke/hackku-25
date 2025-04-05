@@ -1,4 +1,5 @@
 import SwiftUI
+import UserNotifications
 
 struct FallEvent: Codable {
     var date: String
@@ -39,7 +40,7 @@ func sendFallEvent(fallEvent: FallEvent) {
 }
 
 struct FallDetectionView: View {
-    @State private var timeRemaining = 30 // Timer set for 30 seconds
+    @State private var timeRemaining = 30
     @State private var timer: Timer? = nil
     @State private var timerExpired = false
     @EnvironmentObject var motionManager: MotionManager
@@ -132,6 +133,7 @@ struct FallDetectionView: View {
                 print("Timer expired. Fall detection process needs review.")
                 motionManager.stopMonitoring()
                 logFallEvent()
+                sendTimeoutNotification()
                 dismiss()
             }
         }
@@ -145,6 +147,22 @@ struct FallDetectionView: View {
     private func logFallEvent() {
         let fallEvent = FallEvent(date: "\(Date())", description: "Fall detected by app")
         sendFallEvent(fallEvent: fallEvent)
+    }
+
+    private func sendTimeoutNotification() {
+        let content = UNMutableNotificationContent()
+        content.title = "Time Expired"
+        content.body = "Contacting emergency contacts now."
+        content.sound = .default
+        content.categoryIdentifier = "FALL_TIMEOUT"
+
+        let request = UNNotificationRequest(identifier: "FallTimeout", content: content, trigger: nil)
+
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                print("Failed to send timeout notification: \(error)")
+            }
+        }
     }
 }
 

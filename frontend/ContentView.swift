@@ -41,11 +41,12 @@ struct ContentView: View {
                         .foregroundColor(.white)
 
                     if let date = motionManager.lastFallDate {
-                        Text("Date: \(date.formatted(date: .abbreviated, time: .standard))")
+                        Text("Date: \(date.formatted(date: .abbreviated, time: .omitted))")
                             .foregroundColor(.white)
                             .font(.system(size: 25))
-                            .lineLimit(nil)
-                            .fixedSize(horizontal: false, vertical: true)
+                        Text("Time: \(date.formatted(date: .omitted, time: .standard))")
+                            .foregroundColor(.white)
+                            .font(.system(size: 25))
                     } else {
                         Text("No falls detected yet.")
                             .foregroundColor(Color(hex: 0xF0ECEB))
@@ -108,3 +109,4 @@ struct MainTabView: View {
     ContentView()
     .environmentObject(MotionManager())
 }
+
