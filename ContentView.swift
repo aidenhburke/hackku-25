@@ -4,6 +4,7 @@ struct ContentView: View {
     @State private var isMonitoring = false
     @State private var lastFallDate: Date? = nil
     @State private var responseTime: TimeInterval? = nil
+    @EnvironmentObject var motionManager: MotionManager
 
     var body: some View {
         VStack(alignment: .leading, spacing: 24) {
@@ -34,6 +35,14 @@ struct ContentView: View {
             .toggleStyle(SwitchToggleStyle(tint: .green))
             .padding(.horizontal)
             .frame(maxWidth: .infinity, alignment: .leading)
+            
+            Button("Simulate Fall") {
+                motionManager.fallDetected = true
+            }
+            .padding()
+            .background(Color.purple)
+            .foregroundColor(.white)
+            .cornerRadius(10)
 
             // Last Fall Info
             VStack(alignment: .leading, spacing: 8) {
@@ -67,35 +76,6 @@ struct ContentView: View {
     }
 }
 
-struct SettingsView: View {
-    var body: some View {
-        VStack {
-            Text("Settings Page")
-                .foregroundColor(.white)
-                .font(.title)
-                .padding()
-            Spacer()
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.black.ignoresSafeArea())
-        .preferredColorScheme(.dark)
-    }
-}
-
-struct ContactsView: View {
-    var body: some View {
-        VStack {
-            Text("Contacts Page")
-                .foregroundColor(.white)
-                .font(.title)
-                .padding()
-            Spacer()
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.black.ignoresSafeArea())
-        .preferredColorScheme(.dark)
-    }
-}
 
 struct MainTabView: View {
     @State private var selectedTab = 0
