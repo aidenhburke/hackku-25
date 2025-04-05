@@ -3,36 +3,21 @@ import SwiftUI
 @main
 struct SafeStepApp: App {
     @StateObject var motionManager = MotionManager()
-    @AppStorage("isFirstTimeUser") var isFirstTimeUser: Bool = true  // Use AppStorage to persist the flag
+    @AppStorage("isFirstTimeUser") var isFirstTimeUser: Bool = false
     @State var isLoggedIn = false
 
     var body: some Scene {
         WindowGroup {
             if isFirstTimeUser {
                 FirstTimeUserView(isLoggedIn: $isLoggedIn)
-                    .onAppear {
-                        // Print the values when the view appears
-                        print("isFirstTimeUser: \(isFirstTimeUser)")
-                        print("isLoggedIn: \(isLoggedIn)")
-                    }
             }
             else if isLoggedIn{
                 RootView()
                 .environmentObject(motionManager)
-                .onAppear {
-                    // Print the values when the view appears
-                    print("isFirstTimeUser: \(isFirstTimeUser)")
-                    print("isLoggedIn: \(isLoggedIn)")
-                }
             }
             else {
                 RootView()
                 .environmentObject(motionManager)
-                .onAppear {
-                    // Print the values when the view appears
-                    print("isFirstTimeUser: \(isFirstTimeUser)")
-                    print("isLoggedIn: \(isLoggedIn)")
-                }
             }
         }
     }

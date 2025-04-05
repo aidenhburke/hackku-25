@@ -37,7 +37,7 @@ struct SettingsView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
                 Text("Settings")
-                    .foregroundColor(.white)
+                    .foregroundColor(Color(hex: 0xEE3233))
                     .font(.largeTitle)
                     .bold()
                     .padding(.horizontal)
@@ -56,15 +56,15 @@ struct SettingsView: View {
                             Button("Manage") {
                                 openAppSettings()
                             }
-                            .foregroundColor(.purple)
+                            .foregroundColor(Color(hex: 0xEE3233))
                         }
                         Text("We use notifications to alert you of important safety messages and status updates.")
                             .font(.body)
-                            .foregroundColor(.gray)
+                            .foregroundColor(Color(hex: 0xF0ECEB))
                             .padding(.trailing)
                     }
                     .padding()
-                    .background(Color(.systemGray5).opacity(0.3))
+                    .background(Color(hex: 0x66A7C5).opacity(0.8))
                     .cornerRadius(16)
 
                     // Location
@@ -80,21 +80,21 @@ struct SettingsView: View {
                             Button("Manage") {
                                 openAppSettings()
                             }
-                            .foregroundColor(.purple)
+                            .foregroundColor(Color(hex: 0xEE3233))
                         }
                         Text("Location data helps us detect falls and provide accurate emergency location support.")
                             .font(.body)
-                            .foregroundColor(.gray)
+                            .foregroundColor(Color(hex: 0xF0ECEB))
                             .padding(.trailing)
                         if locationStatus != .authorizedAlways && locationStatus != .authorizedWhenInUse {
                             Text("Limited or no access – open Settings to allow full location access.")
-                                .foregroundColor(.gray)
+                                .foregroundColor(Color(hex: 0xF0ECEB))
                                 .font(.body)
                                 .padding(.top, 4)
                         }
                     }
                     .padding()
-                    .background(Color(.systemGray5).opacity(0.3))
+                    .background(Color(hex: 0x66A7C5).opacity(0.8))
                     .cornerRadius(16)
 
                     // Alert Vibration
@@ -110,15 +110,15 @@ struct SettingsView: View {
                             Button("Manage") {
                                 openAppSettings()
                             }
-                            .foregroundColor(.purple)
+                            .foregroundColor(Color(hex: 0xEE3233))
                         }
                         Text("Vibrations are used to ensure that critical alerts reach you even when sound is off.")
                             .font(.body)
-                            .foregroundColor(.gray)
+                            .foregroundColor(Color(hex: 0xF0ECEB))
                             .padding(.trailing)
                     }
                     .padding()
-                    .background(Color(.systemGray5).opacity(0.3))
+                    .background(Color(hex: 0x66A7C5).opacity(0.8))
                     .cornerRadius(16)
 
                     // Contacts Access
@@ -134,15 +134,15 @@ struct SettingsView: View {
                             Button("Manage") {
                                 openAppSettings()
                             }
-                            .foregroundColor(.purple)
+                            .foregroundColor(Color(hex: 0xEE3233))
                         }
                         Text("We use your contacts to notify emergency contacts when a fall or alert is detected.")
                             .font(.body)
-                            .foregroundColor(.gray)
+                            .foregroundColor(Color(hex: 0xF0ECEB))
                             .padding(.trailing)
                     }
                     .padding()
-                    .background(Color(.systemGray5).opacity(0.3))
+                    .background(Color(hex: 0x66A7C5).opacity(0.8))
                     .cornerRadius(16)
                 }
                 .padding(.horizontal)
@@ -180,7 +180,7 @@ struct SettingsView: View {
 
             self.systemCanVibrate = true
         }
-        .background(Color.black.ignoresSafeArea())
+        .background(Color(hex: 0xCEEBFB))
         .preferredColorScheme(.dark)
     }
 
@@ -189,4 +189,8 @@ struct SettingsView: View {
             UIApplication.shared.open(settingsURL)
         }
     }
+}
+
+#Preview {
+    SettingsView()
 }

@@ -3,81 +3,74 @@ import SwiftUI
 struct ContentView: View {
     @State private var isMonitoring = false
     @State private var lastFallDate: Date? = nil
-    @State private var responseTime: TimeInterval? = nil
     @EnvironmentObject var motionManager: MotionManager
 
     var body: some View {
         VStack(alignment: .leading, spacing: 24) {
             // Title
             Text("SafeStep")
-                .font(.largeTitle)
+                .font(.system(size: 50))
                 .bold()
                 .foregroundColor(Color(hex: 0xEE3233))
                 .padding(.horizontal)
-
-            // Monitoring Status
-            HStack {
-                Text(isMonitoring ? "Monitoring Active" : "Monitoring Paused")
-                    .font(.headline)
-                    .foregroundColor(Color(hex: 0x66A7C5))
-                Circle()
-                    .fill(isMonitoring ? Color.green : Color.red)
-                    .frame(width: 12, height: 12)
-            }
-            .padding(.horizontal)
-            .toggleStyle(SwitchToggleStyle(tint: .green))
-            .padding(.horizontal)
-            .frame(maxWidth: .infinity, alignment: .leading)
             
-            Button("Simulate Fall") {
-                motionManager.fallDetected = true
+            Spacer()
+            
+            HStack {
+                Spacer()
+                Button(action: {
+                    motionManager.fallDetected = true
+                    let newFallDate = Date()
+                    self.lastFallDate = newFallDate
+                }) {
+                    Text("I Fell")
+                        .font(.system(size: 70))
+                        .fontWeight(.bold)
+                        .padding()
+                        .frame(width: 300, height: 300)
+                        .foregroundColor(.white)
+                        .background(Color(hex: 0xEE3233))
+                        .clipShape(Circle())
+                }
+                Spacer()
             }
-            .padding()
-            .background(Color(hex: 0x66A7C5))
-            .foregroundColor(.white)
-            .cornerRadius(10)
-            .padding(.horizontal)
+            .padding(.bottom, 50)
 
-            // Last Fall Info
             VStack(alignment: .leading, spacing: 8) {
                 Text("Last Fall Detected")
-                    .font(.subheadline)
+                    .font(.system(size: 30))
                     .bold()
                     .foregroundColor(.white)
+                Spacer()
                 if let date = lastFallDate {
                     Text("Date: \(date.formatted(date: .abbreviated, time: .standard))")
                         .foregroundColor(.white)
-                    if let response = responseTime {
-                        Text("Response Time: \(Int(response)) seconds")
-                            .foregroundColor(.white)
-                    }
+                        .font(.system(size: 24))
                 } else {
                     Text("No falls detected yet.")
-                        .foregroundColor(.gray)
+                        .foregroundColor(Color(hex: 0xF0ECEB))
                 }
             }
             .padding()
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Color(.systemGray5))
+            .frame(maxWidth: .infinity, maxHeight: 100, alignment: .leading)
+            .background(Color(hex: 0x66A7C5))
             .cornerRadius(12)
             .padding(.horizontal)
 
             Spacer()
         }
         .padding(.top)
-        .background((Color(hex: 0xCEEBFB)))
+        .background(Color(hex: 0xCEEBFB))
         .preferredColorScheme(.dark)
     }
 }
-
 
 struct MainTabView: View {
     @State private var selectedTab = 0
 
     init() {
-        UITabBar.appearance().backgroundColor = UIColor.darkGray
-        UITabBar.appearance().barTintColor = UIColor.black
-        UITabBar.appearance().unselectedItemTintColor = UIColor.lightGray
+        UITabBar.appearance().backgroundColor = UIColor(red: 0.4, green: 0.655, blue: 0.773, alpha: 1)
+        UITabBar.appearance().unselectedItemTintColor = UIColor(red: 0.941, green: 0.925, blue: 0.922, alpha: 1)
     }
 
     var body: some View {
@@ -100,7 +93,7 @@ struct MainTabView: View {
                 }
                 .tag(2)
         }
-        .accentColor(.purple)
+        .accentColor(Color(hex: 0xEE3233))
         .preferredColorScheme(.dark)
     }
 }
