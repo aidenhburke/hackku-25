@@ -9,6 +9,7 @@ class MotionManager: ObservableObject {
     // Published property to notify SwiftUI views
     @Published var fallDetected = false
     @Published var accelerometerAvailable = true
+    @Published var lastFallDate: Date? = nil
     private let accelerationThreshold = 25.0  // Change as needed
 
     func startMonitoring() {
@@ -18,17 +19,17 @@ class MotionManager: ObservableObject {
             return
         }
 
-        motionManager.accelerometerUpdateInterval = 0.015  // Set the interval for sensor data updates
+        motionManager.accelerometerUpdateInterval = 0.1  // Set the interval for sensor data updates
 
         // Start receiving accelerometer updates
         motionManager.startAccelerometerUpdates()
 
         // Timer to check accelerometer data
-        timer = Timer.scheduledTimer(withTimeInterval: 0.015, repeats: true) { _ in
+        timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
             if let data = self.motionManager.accelerometerData {
-                let x = data.acceleration.x
-                let y = data.acceleration.y
-                let z = data.acceleration.z
+                let x = data.acceleration.x * 9.8
+                let y = data.acceleration.y * 9.8
+                let z = data.acceleration.z * 9.8
 
                 // Calculate the total acceleration
                 let totalAcceleration = sqrt(x * x + y * y + z * z)
@@ -40,6 +41,7 @@ class MotionManager: ObservableObject {
                 if totalAcceleration > self.accelerationThreshold {
                     DispatchQueue.main.async {
                         self.fallDetected = true
+                        self.lastFallDate = Date()
                         self.stopMonitoring()
                     }
                 } else {
