@@ -80,6 +80,7 @@ struct ContactsView: View {
             VStack(alignment: .leading, spacing: 10) {
                 Text("Emergency Contacts")
                     .font(.system(size: 36, weight: .bold))
+                    .foregroundColor(Color(hex: 0xEE3233))
                     .padding(.horizontal)
                     .padding(.top)
 
@@ -87,7 +88,8 @@ struct ContactsView: View {
                     Text("Swipe left on a contact to remove it from the list.")
                         .font(.title)
                         .multilineTextAlignment(.center)
-                        .foregroundColor(.gray)
+                        .frame(maxWidth: .infinity)
+                        .foregroundColor(Color(hex: 0x6C7476))
                         .padding(.horizontal)
                 }
 
@@ -98,11 +100,12 @@ struct ContactsView: View {
                             .resizable()
                             .scaledToFit()
                             .frame(width: 160, height: 160)
-                            .foregroundColor(.blue)
+                            .foregroundColor(Color(hex: 0xEE3233))
 
                         Text("No emergency contacts added yet.")
                             .font(.title2)
-                            .foregroundColor(.gray)
+                            .frame(maxWidth: .infinity)
+                            .foregroundColor(Color(hex: 0x6C7476))
                     }
                     .frame(maxWidth: .infinity)
                     Spacer()
@@ -112,18 +115,23 @@ struct ContactsView: View {
                             VStack(alignment: .leading, spacing: 4) {
                                 Text(contact.fullName)
                                     .font(.headline)
+                                    .foregroundColor(.white)
                                 Text(contact.phoneNumber)
-                                    .foregroundColor(.secondary)
+                                    .foregroundColor(Color(hex: 0xF0ECEB))
                                 if let email = contact.email {
                                     Text(email)
-                                        .foregroundColor(.secondary)
+                                        .foregroundColor(Color(hex: 0xF0ECEB))
                                 }
                             }
                             .padding(.vertical, 4)
+                            .listRowBackground(Color(hex: 0x66A7C5))
                         }
                         .onDelete(perform: store.removeContact)
                     }
+                    .scrollContentBackground(.hidden)
+                    .background(Color(hex: 0xCEEBFB))
                     .listStyle(InsetGroupedListStyle())
+                    .cornerRadius(12)
                 }
 
                 Spacer()
@@ -131,11 +139,16 @@ struct ContactsView: View {
                 Text("You can manage your contacts in the Settings to add them to the emergency contact list.")
                     .font(.title3)
                     .multilineTextAlignment(.center)
-                    .foregroundColor(.gray)
+                    .frame(maxWidth: .infinity)
+                    .foregroundColor(Color(hex: 0x6C7476))
                     .padding(.horizontal)
                     .padding(.bottom, 36)
             }
-            .background(Color(.systemGroupedBackground).ignoresSafeArea())
+            .background(Color(hex: 0xCEEBFB))  // Same background for the whole view
         }
     }
+}
+
+#Preview {
+    ContactsView()
 }

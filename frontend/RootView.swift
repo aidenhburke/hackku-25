@@ -14,10 +14,13 @@ struct RootView: View {
         .onAppear {
             motionManager.startMonitoring()
         }
+        .onReceive(NotificationCenter.default.publisher(for: Notification.Name("FallNotificationTapped"))) { _ in
+            motionManager.fallDetected = true
+        }
     }
-}	
+}
 
 #Preview {
     RootView()
-    .environmentObject(MotionManager())
+        .environmentObject(MotionManager())
 }

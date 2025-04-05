@@ -2,82 +2,82 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var isMonitoring = false
-    @State private var lastFallDate: Date? = nil
-    @State private var responseTime: TimeInterval? = nil
+    @State private var navigateToFallDetected = false
     @EnvironmentObject var motionManager: MotionManager
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 24) {
-            // Title
-            Text("SafeStep")
-                .font(.largeTitle)
-                .bold()
-                .foregroundColor(Color(hex: 0xEE3233))
+        NavigationStack {
+            VStack(alignment: .leading, spacing: 24) {
+                Text("SafeStep")
+                    .font(.system(size: 50))
+                    .bold()
+                    .foregroundColor(Color(hex: 0xEE3233))
+                    .padding(.horizontal)
+
+                Spacer()
+
+                HStack {
+                    Spacer()
+                    Button(action: {
+                        navigateToFallDetected = true
+                    }) {
+                        Text("I Fell")
+                            .font(.system(size: 70))
+                            .fontWeight(.bold)
+                            .padding()
+                            .frame(width: 300, height: 300)
+                            .foregroundColor(.white)
+                            .background(Color(hex: 0xEE3233))
+                            .clipShape(Circle())
+                    }
+                    Spacer()
+                }
+                .padding(.bottom, 50)
+
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Last Fall Detected")
+                        .font(.system(size: 30))
+                        .bold()
+                        .foregroundColor(.white)
+
+                    if let date = motionManager.lastFallDate {
+                        Text("Date: \(date.formatted(date: .abbreviated, time: .omitted))")
+                            .foregroundColor(.white)
+                            .font(.system(size: 25))
+                        Text("Time: \(date.formatted(date: .omitted, time: .standard))")
+                            .foregroundColor(.white)
+                            .font(.system(size: 25))
+                    } else {
+                        Text("No falls detected yet.")
+                            .foregroundColor(Color(hex: 0xF0ECEB))
+                    }
+                }
+                .padding()
+                .frame(maxWidth: .infinity, maxHeight: 150, alignment: .leading)
+                .background(Color(hex: 0x66A7C5))
+                .cornerRadius(12)
                 .padding(.horizontal)
 
-            // Monitoring Status
-            HStack {
-                Text(isMonitoring ? "Monitoring Active" : "Monitoring Paused")
-                    .font(.headline)
-                    .foregroundColor(Color(hex: 0x66A7C5))
-                Circle()
-                    .fill(isMonitoring ? Color.green : Color.red)
-                    .frame(width: 12, height: 12)
+                Spacer()
             }
-            .padding(.horizontal)
-            .toggleStyle(SwitchToggleStyle(tint: .green))
-            .padding(.horizontal)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            
-            Button("Simulate Fall") {
-                motionManager.fallDetected = true
+            .padding(.top)
+            .background(Color(hex: 0xCEEBFB))
+            .preferredColorScheme(.dark)
+            // 👇 This is the modern way to push to a destination
+            .navigationDestination(isPresented: $navigateToFallDetected) {
+                FallDetectionView()
+                    .environmentObject(motionManager)
             }
-            .padding()
-            .background(Color(hex: 0x66A7C5))
-            .foregroundColor(.white)
-            .cornerRadius(10)
-            .padding(.horizontal)
-
-            // Last Fall Info
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Last Fall Detected")
-                    .font(.subheadline)
-                    .bold()
-                    .foregroundColor(.white)
-                if let date = lastFallDate {
-                    Text("Date: \(date.formatted(date: .abbreviated, time: .standard))")
-                        .foregroundColor(.white)
-                    if let response = responseTime {
-                        Text("Response Time: \(Int(response)) seconds")
-                            .foregroundColor(.white)
-                    }
-                } else {
-                    Text("No falls detected yet.")
-                        .foregroundColor(.gray)
-                }
-            }
-            .padding()
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Color(.systemGray5))
-            .cornerRadius(12)
-            .padding(.horizontal)
-
-            Spacer()
         }
-        .padding(.top)
-        .background((Color(hex: 0xCEEBFB)))
-        .preferredColorScheme(.dark)
     }
 }
-
 
 struct MainTabView: View {
     @State private var selectedTab = 0
 
     init() {
-        UITabBar.appearance().backgroundColor = UIColor.darkGray
-        UITabBar.appearance().barTintColor = UIColor.black
-        UITabBar.appearance().unselectedItemTintColor = UIColor.lightGray
+        UITabBar.appearance().backgroundColor = UIColor(red: 0.4, green: 0.655, blue: 0.773, alpha: 1)
+        UITabBar.appearance().unselectedItemTintColor = UIColor(red: 0.941, green: 0.925, blue: 0.922, alpha: 1)
     }
 
     var body: some View {
@@ -100,11 +100,13 @@ struct MainTabView: View {
                 }
                 .tag(2)
         }
-        .accentColor(.purple)
+        .accentColor(Color(hex: 0xEE3233))
         .preferredColorScheme(.dark)
     }
 }
 
 #Preview {
     ContentView()
+    .environmentObject(MotionManager())
 }
+
