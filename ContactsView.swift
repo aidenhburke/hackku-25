@@ -77,35 +77,35 @@ struct ContactsView: View {
 
     var body: some View {
         NavigationView {
-            VStack(alignment: .leading, spacing: 16) {
+            VStack(alignment: .leading, spacing: 10) {
                 Text("Emergency Contacts")
-                    .font(.title)
-                    .bold()
+                    .font(.system(size: 36, weight: .bold))
                     .padding(.horizontal)
                     .padding(.top)
 
-                Text("Swipe left on a contact to remove it from the list.")
-                    .font(.title2)
-                    .foregroundColor(.gray)
-                    .padding(.horizontal)
+                if !store.contacts.isEmpty {
+                    Text("Swipe left on a contact to remove it from the list.")
+                        .font(.title)
+                        .multilineTextAlignment(.center)
+                        .foregroundColor(.gray)
+                        .padding(.horizontal)
+                }
 
                 if store.contacts.isEmpty {
-                    VStack(spacing: 12) {
+                    Spacer()
+                    VStack(spacing: 10) {
                         Image(systemName: "person.crop.circle.badge.plus")
                             .resizable()
                             .scaledToFit()
-                            .frame(width: 100, height: 100)
-                            .foregroundColor(.purple)
+                            .frame(width: 160, height: 160)
+                            .foregroundColor(.blue)
+
                         Text("No emergency contacts added yet.")
-                            .font(.headline)
+                            .font(.title2)
                             .foregroundColor(.gray)
-                        Text("Go to Settings and grant access to your device contacts. Contacts that are allowed will appear here.")
-                            .font(.body)
-                            .multilineTextAlignment(.center)
-                            .foregroundColor(.gray)
-                            .padding(.horizontal)
                     }
-                    .padding()
+                    .frame(maxWidth: .infinity)
+                    Spacer()
                 } else {
                     List {
                         ForEach(store.contacts) { contact in
@@ -128,16 +128,14 @@ struct ContactsView: View {
 
                 Spacer()
 
-                VStack(spacing: 12) {
-                    Text("You can manage which contacts appear here by going to the Settings tab and granting permission to access your device contacts.")
-                        .font(.body)
-                        .foregroundColor(.gray)
-                        .padding(.horizontal)
-                }
-                .padding(.bottom)
+                Text("You can manage your contacts in the Settings to add them to the emergency contact list.")
+                    .font(.title3)
+                    .multilineTextAlignment(.center)
+                    .foregroundColor(.gray)
+                    .padding(.horizontal)
+                    .padding(.bottom, 36)
             }
             .background(Color(.systemGroupedBackground).ignoresSafeArea())
         }
     }
 }
-
