@@ -6,16 +6,16 @@ import Contacts
 
 class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     private var manager = CLLocationManager()
-
+    
     override init() {
         super.init()
         manager.delegate = self
     }
-
+    
     func requestPermission() {
         manager.requestWhenInUseAuthorization()
     }
-
+    
     func authorizationStatus() -> CLAuthorizationStatus {
         return manager.authorizationStatus
     }
@@ -30,9 +30,9 @@ struct SettingsView: View {
     @State private var contactsAccessGranted = false
     @State private var systemCanVibrate = true
     @State private var hasRequestedPermissions = false
-
+    
     @StateObject private var locationManager = LocationManager()
-
+    
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
@@ -41,7 +41,7 @@ struct SettingsView: View {
                     .font(.largeTitle)
                     .bold()
                     .padding(.horizontal)
-
+                
                 VStack(alignment: .leading, spacing: 24) {
                     // Notifications
                     VStack(alignment: .leading, spacing: 14) {
@@ -66,7 +66,7 @@ struct SettingsView: View {
                     .padding()
                     .background(Color(hex: 0x66A7C5).opacity(0.8))
                     .cornerRadius(16)
-
+                    
                     // Location
                     VStack(alignment: .leading, spacing: 14) {
                         HStack {
@@ -96,7 +96,7 @@ struct SettingsView: View {
                     .padding()
                     .background(Color(hex: 0x66A7C5).opacity(0.8))
                     .cornerRadius(16)
-
+                    
                     // Alert Vibration
                     VStack(alignment: .leading, spacing: 14) {
                         HStack {
@@ -120,7 +120,7 @@ struct SettingsView: View {
                     .padding()
                     .background(Color(hex: 0x66A7C5).opacity(0.8))
                     .cornerRadius(16)
-
+                    
                     // Contacts Access
                     VStack(alignment: .leading, spacing: 14) {
                         HStack {
@@ -152,45 +152,41 @@ struct SettingsView: View {
         .onAppear {
             if !hasRequestedPermissions {
                 hasRequestedPermissions = true
-
+                
                 UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, _ in
                     DispatchQueue.main.async {
                         self.notificationsEnabled = granted
                     }
                 }
-
+                
                 locationManager.requestPermission()
-
+                
                 CNContactStore().requestAccess(for: .contacts) { granted, _ in
                     DispatchQueue.main.async {
                         self.contactsAccessGranted = granted
                     }
                 }
             }
-
+            
             UNUserNotificationCenter.current().getNotificationSettings { settings in
                 DispatchQueue.main.async {
                     self.notificationsEnabled = settings.authorizationStatus == .authorized || settings.authorizationStatus == .provisional
                 }
             }
-
+            
             let status = locationManager.authorizationStatus()
             self.locationStatus = status
             self.locationTracking = status == .authorizedWhenInUse || status == .authorizedAlways
-
+            
             self.systemCanVibrate = true
         }
         .background(Color(hex: 0xCEEBFB))
         .preferredColorScheme(.dark)
     }
-
+    
     func openAppSettings() {
         if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
             UIApplication.shared.open(settingsURL)
         }
     }
-}
-
-#Preview {
-    SettingsView()
 }

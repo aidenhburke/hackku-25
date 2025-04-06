@@ -3,7 +3,7 @@ import SwiftUI
 struct RootView: View {
     @EnvironmentObject var motionManager: MotionManager
     @StateObject private var contactStore = ContactStore()
-
+    
     var body: some View {
         ZStack {
             if motionManager.fallDetected {
@@ -19,9 +19,4 @@ struct RootView: View {
             motionManager.fallDetected = true
         }
     }
-}
-
-#Preview {
-    RootView()
-        .environmentObject(MotionManager())
 }
