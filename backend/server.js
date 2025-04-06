@@ -1,13 +1,13 @@
-const express = require("express"); //Express for building API
+const express = require("express"); // Express for building API
 const cors = require("cors");
-const dotenv = require("dotenv"); //Load environmental variables
+const dotenv = require("dotenv"); // Load environmental variables
 const { Vonage } = require("@vonage/server-sdk"); // Vonage for sending messages
 
-dotenv.config(); //Load env vars
+dotenv.config(); // Load env vars
 
-//Init
+// Init
 const app = express();
-app.use(cors()); //Allows requests froms swift
+app.use(cors()); // Allows requests from Swift
 app.use(express.json()); // To parse incoming JSON requests
 
 // Initialize Vonage client with credentials from env file
@@ -35,7 +35,7 @@ app.post("/api/send_sms", async (req, res) => {
         new Promise((resolve, reject) => {
           vonage.sms.send(
             {
-              from: "SafeStep", // Can be your app name or phone number
+              from: "", // Leave this blank
               to: number,
               text: message,
             },
@@ -70,6 +70,6 @@ app.get("/", (req, res) => {
   res.send("Backend is running successfully.");
 });
 
-//Start Express server
+// Start Express server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
