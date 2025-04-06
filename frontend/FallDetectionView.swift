@@ -178,7 +178,7 @@ struct FallDetectionView: View {
 
     private func logFallEvent() {
         let location = locationManager.currentLocation ?? "Unknown Location"
-        let emergencyContacts = contactStore.formattedPhoneNumbers
+        let emergencyContacts = contactStore.emails
 
         let fallEvent = FallEvent(username: username, location: location, contacts: emergencyContacts)
 
@@ -231,4 +231,3 @@ class CurrentLocationManager: NSObject, ObservableObject, CLLocationManagerDeleg
         currentLocation = "Location unavailable"
     }
 }
-
