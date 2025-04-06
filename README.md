@@ -35,6 +35,8 @@ As our loved ones age, ensuring their safety becomes increasingly important — 
 - **SwiftUI** – For building a responsive, accessible interface.
 - **CoreMotion** – To detect device motion and identify fall events.
 - **@AppStorage** – To persist user and app state across sessions.
+- **Vercel** – For deployment of backend server.
+- **Nodemailer** – For email notification alert sending.
 - **Xcode** – Development environment used during HackKU 2025.
 
 ---
