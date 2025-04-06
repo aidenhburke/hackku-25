@@ -55,6 +55,7 @@ class MotionManager: NSObject, ObservableObject, CLLocationManagerDelegate {
                             if !self.hasSentFallNotification {
                                 self.hasSentFallNotification = true
                                 self.sendFallDetectedNotification()
+                                self.scheduleTimeoutNotification()
                             }
                         }
                     }
@@ -102,6 +103,23 @@ class MotionManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         }
     }
 
+    private func scheduleTimeoutNotification() {
+        let content = UNMutableNotificationContent()
+        content.title = "Time Expired"
+        content.body = "Contacting emergency contacts now."
+        content.sound = .default
+        content.categoryIdentifier = "FALL_TIMEOUT"
+
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 30, repeats: false)
+        let request = UNNotificationRequest(identifier: "FallTimeout", content: content, trigger: trigger)
+
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                print("Failed to schedule timeout notification: \(error)")
+            }
+        }
+    }
+
     func setupLocationBackgroundKeepAlive() {
         if CLLocationManager.locationServicesEnabled() {
             locationManager.requestAlwaysAuthorization()
@@ -121,3 +139,4 @@ class MotionManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         // No-op: only used to keep app alive in background
     }
 }
+
