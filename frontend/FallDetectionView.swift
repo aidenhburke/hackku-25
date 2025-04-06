@@ -163,11 +163,29 @@ struct FallDetectionView: View {
     private func handleTimerExpiration() {
         timerExpired = true
         motionManager.lastFallDate = Date()
-        logFallEvent()
         invalidateTimer()
         motionManager.fallDetected = false
         motionManager.startMonitoring()
         sendTimeoutNotification()
+
+        // Ensure background-safe execution
+        var bgID: UIBackgroundTaskIdentifier? = nil
+
+        // ✅ Start background task
+        bgID = UIApplication.shared.beginBackgroundTask(withName: "FallTimeoutEmail") {
+            if let bgID = bgID {
+                UIApplication.shared.endBackgroundTask(bgID)
+            }
+        }
+
+        logFallEvent()
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
+            if let bgID = bgID {
+                UIApplication.shared.endBackgroundTask(bgID)
+            }
+        }
+
         dismiss()
     }
 
@@ -181,7 +199,6 @@ struct FallDetectionView: View {
         let emergencyContacts = contactStore.emails
 
         let fallEvent = FallEvent(username: username, location: location, contacts: emergencyContacts)
-
         sendFallAlert(name: fallEvent.username, location: fallEvent.location, emails: fallEvent.contacts)
     }
 
