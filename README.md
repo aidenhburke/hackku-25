@@ -23,7 +23,18 @@ In short, the longer people are forced to wait after a fall, the worse the situa
 - Analyzing the trends in fall and non-fall events, we set a threshold to determine the occurrence of a fall event, and monitor the accelerometer data using an iPhone app to determine if a fall has occurred
 - While fall detection programs have existed before, a lot of them require some kind of external hardware like Apple Watches for detection, while SafeStep just uses the iPhone's built-in technology
 - Older technology like LifeAlert often require manual activation, while SafeStep's fall detection will automatically send out an alert if a fall event is not cancelled within 30 seconds of it occurring
+  
+---
 
+## :chart_with_upwards_trend: Finding the Algorithm
+- With the acceleration data passed in from the iPhone's accelerometer, we had to find a way to use it to detect falls; the data is received with x, y, and z acceleration components, so we had a lot to work with
+- At first, the idea was to use primarily the y acceleration since we figured that falls would mainly consist of a downwards motion; due to the nature of the triaxial accelerometer, that wasn't quite as simple
+- We found that the triaxial accelerometer measures the y axis as being up through the charging port, lying parallel to the plane of the phone screen; the x axis lies perpendicular to that, but still parallel to the plane of the phone screen, so the phone screen would mirror the xy-plane if that makes it easier to visualize; then the z axis is the axis coming out of the screen toward you
+- The reason modeling the fall was not as simple as just a downwards y motion boils down to 2 main reasons: most falls aren't directly down, but rather forward or to the side and slowly crumpling down; also, your phone is almost never at a perfectly straight angle that the accelerometer's y axis would be pointing strictly down. Especially when in your pocket, your phone will be sitting at odd angles, upside down, backwards, etc.
+- For this reason, we decided to boil the accelerational components down to just a single resultant/net acceleration, which also helped because it meant the numbers we worked with would be strictly non-negative, which made the modeling a little easier
+- After gathering some data by recording the phone's accelerational data while doing different movements, I wrote a relatively simple python script to extract the data and normalize each event around the largest accelerational event in it (to compare the falls to the non-falls), and looked to find where we could cutoff the acceleration that would allow all the falling events to be classified as falls and all the non-falling events as non-falls
+- That became the threshold for detecting a fall event, and we continued to test that on new events whenever we recorded new data, and it continued to hold true and test at a very high accuracy
+- To look more closely at the acceleration data (and the resulting graphs generated for each event), the algorithm_refining directory in this repo has all of that code and input
 
 ---
 
