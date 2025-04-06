@@ -29,15 +29,6 @@ As our loved ones age, ensuring their safety becomes increasingly important — 
 
 ---
 
-## 🧭 App Overview
-
-- `FirstTimeUserView.swift` – Landing screen for first-time users with login/signup options.
-- `LoginView.swift` & `SignUpView.swift` – Basic user authentication.
-- `FallDetectionView.swift` – Main dashboard that monitors motion and alerts on falls.
-- `ContactsView.swift` – Interface for adding and viewing emergency contacts.
-- `SettingsView.swift` – Preferences and configuration settings.
-
----
 
 ## 🛠️ Built With
 
