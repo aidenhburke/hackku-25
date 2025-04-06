@@ -100,7 +100,12 @@ struct FallDetectionView: View {
             if timeRemaining > 0 {
                 timeRemaining -= 1
             } else {
-                handleTimerExpiration()
+                timerExpired = true
+                motionManager.lastFallDate = Date()
+                invalidateTimer()
+                motionManager.stopMonitoring()
+                sendTimeoutNotification() // <- This line is key
+                dismiss()
             }
         }
     }

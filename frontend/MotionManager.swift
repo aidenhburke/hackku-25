@@ -3,18 +3,25 @@ import CoreMotion
 import Combine
 import UserNotifications
 import UIKit
+import CoreLocation
 
-class MotionManager: ObservableObject {
+class MotionManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     private let motionManager = CMMotionManager()
     private var monitorTimer: Timer?
     private var backgroundTask: UIBackgroundTaskIdentifier = .invalid
     private var hasSentFallNotification = false
+    private let locationManager = CLLocationManager()
 
     @Published var fallDetected = false
     @Published var accelerometerAvailable = true
     @Published var lastFallDate: Date? = nil
     @Published var timerStartedDate: Date? = nil
     private let accelerationThreshold = 25.0
+
+    override init() {
+        super.init()
+        locationManager.delegate = self
+    }
 
     func startMonitoring() {
         hasSentFallNotification = false
@@ -93,6 +100,25 @@ class MotionManager: ObservableObject {
                 print("Failed to schedule motion-based notification: \(error)")
             }
         }
+    }
+
+    func setupLocationBackgroundKeepAlive() {
+        if CLLocationManager.locationServicesEnabled() {
+            locationManager.requestAlwaysAuthorization()
+            locationManager.startUpdatingLocation()
+            locationManager.allowsBackgroundLocationUpdates = true
+            locationManager.pausesLocationUpdatesAutomatically = false
+        }
+    }
+
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        if status == .authorizedAlways || status == .authorizedWhenInUse {
+            manager.startUpdatingLocation()
+        }
+    }
+
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        // No-op: only used to keep app alive in background
     }
 }
 

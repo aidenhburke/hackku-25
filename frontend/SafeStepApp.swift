@@ -8,7 +8,6 @@
 import SwiftUI
 import UserNotifications
 
-
 @main
 struct SafeStepApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
