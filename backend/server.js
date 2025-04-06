@@ -1,53 +1,58 @@
-// Main server file
-// Sets up express app and connects to MongoDB
-
-const mongoose = require("mongoose");
-const express = require("express");
+const express = require("express"); //Express for building API
 const cors = require("cors");
-const connectDB = require("./config/db"); //Import MongoDB connection
-require("dotenv").config(); //Load variable from .env
+const dotenv = require("dotenv"); //Load environmental variables
+const twilio = require("twilio"); //Twilio for sedning messages
 
-const app = express(); //init express
-app.use(cors());
-app.use(express.json()); //Pasring incoming JSON requests
+dotenv.config(); //Load env vars
 
-connectDB(); //connect to MongoDB
+//Init
+const app = express();
+app.use(cors()); //Allows requests froms swift
+app.use(express.json()); // To parse incoming JSON requests
 
-mongoose
-  .connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => console.log("MongoDB connected successfully."))
-  .catch((error) => console.error("MongoDB connection failed:", error.message));
+//Initialize Twilio with credentials from env file
+const client = twilio(
+  process.env.TWILIO_ACCOUNT_SID,
+  process.env.TWILIO_AUTH_TOKEN
+);
 
-//Routes for handling requests for fall events and conatcts
-app.use("/api/fall_events", require("./routes/fallEvents"));
-app.use("/api/contacts", require("./routes/contacts"));
+// API Route to send SMS
+app.post("/api/send_sms", async (req, res) => {
+  const { name, location, numbers } = req.body;
 
-//defines a route for / to get rid of vercel error message
+  if (!name || !location || !numbers) {
+    return res.status(400).json({
+      error: "Name, location, and a list of phone numbers are required.",
+    });
+  }
+
+  const message =
+    "A fall has been detected from ${name}'s phone. Location: ${location}";
+
+  try {
+    //Send messages to all provided numbers
+    const sendPromises = numbers.map((number) =>
+      client.messages.create({
+        body: message,
+        from: process.env.TWILIO_PHONE_NUMBER,
+        to: number,
+      })
+    );
+
+    await Promise.all(sendPromises); //Wait for messgaes to be sent
+
+    res.status(200).json({ message: "Messages sent successfully!" });
+  } catch (error) {
+    console.error("Failed to send messages:", error.message);
+    res.status(500).json({ error: "Failed to send messages" });
+  }
+});
+
+// Root Route to check if backend is running
 app.get("/", (req, res) => {
   res.send("Backend is running successfully.");
 });
 
-app.post("/api/fall_events", (req, res) => {
-  const { date, description } = req.body;
-
-  if (!date || !description) {
-    return res
-      .status(400)
-      .json({ error: "Date and description are required." });
-  }
-
-  console.log("Received fall event:", req.body);
-  res.status(200).json({ message: "Fall event received successfully." });
-});
-
-app.get("/api/fall_events", (req, res) => {
-  // Retrieve fall event data from the database
-  res.json({ message: "Returning fall events." });
-});
-
-//Sever on port 3000
+//Start Express server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
