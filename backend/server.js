@@ -33,7 +33,7 @@ app.post("/api/send_email", async (req, res) => {
 
   const subject = `Fall detected for ${name}`;
   const sanitizedLocation = location.replace(", ", ",");
-  const message = `A fall has been detected from ${name}'s phone. Location: https://www.google.com/maps/place/${sanitizedLocation} `; 
+  const message = `A fall has been detected from ${name}'s phone. Location: ${location} https://www.google.com/maps/place/${sanitizedLocation} `; 
 
 
   try {
