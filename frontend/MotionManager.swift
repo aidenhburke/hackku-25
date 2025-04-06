@@ -41,9 +41,6 @@ class MotionManager: NSObject, ObservableObject, CLLocationManagerDelegate {
                 let z = data.acceleration.z * 9.8
 
                 let totalAcceleration = sqrt(x * x + y * y + z * z)
-                if totalAcceleration > 5 {
-                    print(totalAcceleration)
-                }
 
                 if totalAcceleration > self.accelerationThreshold {
                     DispatchQueue.main.async {
@@ -139,4 +136,3 @@ class MotionManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         // No-op: only used to keep app alive in background
     }
 }
-

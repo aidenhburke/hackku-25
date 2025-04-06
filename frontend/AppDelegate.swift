@@ -8,7 +8,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
     ) -> Bool {
         // Set the notification delegate
         UNUserNotificationCenter.current().delegate = self
-
+        
         // Define the notification category for fall alerts
         let fallCategory = UNNotificationCategory(
             identifier: "FALL_DETECTED",
@@ -17,10 +17,10 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
             options: .customDismissAction
         )
         UNUserNotificationCenter.current().setNotificationCategories([fallCategory])
-
+        
         return true
     }
-
+    
     func userNotificationCenter(
         _ center: UNUserNotificationCenter,
         didReceive response: UNNotificationResponse,

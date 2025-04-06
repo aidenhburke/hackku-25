@@ -8,8 +8,8 @@ struct FallEvent: Codable {
     var contacts: [String]
 }
 
-func sendFallAlert(name: String, location: String, numbers: [String]) {
-    guard let url = URL(string: "https://fall-detection-backend-marktmaloney-mark-maloneys-projects.vercel.app/api/send_sms") else {
+func sendFallAlert(name: String, location: String, emails: [String]) {
+    guard let url = URL(string: "https://hackkusafestep.vercel.app/api/send_email") else {
         print("Invalid URL")
         return
     }
@@ -21,7 +21,7 @@ func sendFallAlert(name: String, location: String, numbers: [String]) {
     let payload: [String: Any] = [
         "name": name,
         "location": location,
-        "numbers": numbers
+        "emails": emails
     ]
 
     do {
@@ -34,12 +34,12 @@ func sendFallAlert(name: String, location: String, numbers: [String]) {
 
     URLSession.shared.dataTask(with: request) { data, response, error in
         if let error = error {
-            print("Error sending SMS: \(error)")
+            print("Error sending email: \(error)")
             return
         }
 
         guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
-            print("Failed to send SMS: Invalid response")
+            print("Failed to send email: Invalid response")
             return
         }
 
@@ -182,9 +182,7 @@ struct FallDetectionView: View {
 
         let fallEvent = FallEvent(username: username, location: location, contacts: emergencyContacts)
 
-        print(fallEvent)
-
-        sendFallAlert(name: fallEvent.username, location: fallEvent.location, numbers: fallEvent.contacts)
+        sendFallAlert(name: fallEvent.username, location: fallEvent.location, emails: fallEvent.contacts)
     }
 
     private func sendTimeoutNotification() {
