@@ -3,6 +3,7 @@ import SwiftUI
 struct ContentView: View {
     @State private var isMonitoring = false
     @State private var navigateToFallDetected = false
+    @StateObject private var contactStore = ContactStore()
     @EnvironmentObject var motionManager: MotionManager
 
     var body: some View {
@@ -65,7 +66,7 @@ struct ContentView: View {
             .preferredColorScheme(.dark)
             // 👇 This is the modern way to push to a destination
             .navigationDestination(isPresented: $navigateToFallDetected) {
-                FallDetectionView()
+                FallDetectionView(contactStore: contactStore)
                     .environmentObject(motionManager)
             }
         }
@@ -109,4 +110,3 @@ struct MainTabView: View {
     ContentView()
     .environmentObject(MotionManager())
 }
-

@@ -2,11 +2,12 @@ import SwiftUI
 
 struct RootView: View {
     @EnvironmentObject var motionManager: MotionManager
+    @StateObject private var contactStore = ContactStore()
 
     var body: some View {
         ZStack {
             if motionManager.fallDetected {
-                FallDetectionView()
+                FallDetectionView(contactStore: contactStore)
             } else {
                 MainTabView()
             }

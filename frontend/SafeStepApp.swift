@@ -1,10 +1,3 @@
-//
-//  SafeStepApp.swift
-//  SafeStep
-//
-//  Created by Ty Farrington on 4/4/25.
-//
-
 import SwiftUI
 import UserNotifications
 
@@ -12,27 +5,26 @@ import UserNotifications
 struct SafeStepApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @StateObject var motionManager = MotionManager()
-    @AppStorage("isFirstTimeUser") var isFirstTimeUser: Bool = false
-    @State var isLoggedIn = false
-
-    init() {
-        requestNotificationPermission()
-    }
-
+    @AppStorage("isFirstTimeUser") var isFirstTimeUser: Bool = true
+    @AppStorage("username") var storedUsername: String = ""
+    
     var body: some Scene {
         WindowGroup {
+            // Determine which view to show based on login and first-time user status
             if isFirstTimeUser {
-                FirstTimeUserView(isLoggedIn: $isLoggedIn)
-            } else if isLoggedIn {
-                RootView()
-                    .environmentObject(motionManager)
-            } else {
+                FirstTimeUserView()
+                    .onChange(of: storedUsername) { _ in
+                        // Update first-time user status after login
+                        if !storedUsername.isEmpty {
+                            isFirstTimeUser = false
+                        }
+                    }
+            } else if !storedUsername.isEmpty {
                 RootView()
                     .environmentObject(motionManager)
             }
         }
     }
-
     private func requestNotificationPermission() {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
             if let error = error {

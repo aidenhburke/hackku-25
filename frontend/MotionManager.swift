@@ -121,4 +121,3 @@ class MotionManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         // No-op: only used to keep app alive in background
     }
 }
-

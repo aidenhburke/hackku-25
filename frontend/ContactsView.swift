@@ -23,7 +23,14 @@ class ContactStore: ObservableObject {
     @Published var contacts: [Contact] = [] {
         didSet {
             saveContacts()
+            updatePhoneNumbers()
         }
+    }
+    
+    private var phoneNumbers: [String] = []
+    
+    var formattedPhoneNumbers: [String] {
+        phoneNumbers
     }
 
     init() {
@@ -70,6 +77,16 @@ class ContactStore: ObservableObject {
         let newContact = Contact(fullName: fullName, phoneNumber: phoneNumber, email: email)
         contacts.append(newContact)
     }
+    private func updatePhoneNumbers() {
+        // Extract phone numbers whenever the contacts array is updated
+        self.phoneNumbers = contacts.map { contact in
+            let digits = contact.phoneNumber.filter { $0.isNumber }
+            let formatted = digits.hasPrefix("1") && digits.count == 11 ? "+\(digits)" :
+                            digits.count == 10 ? "+1\(digits)" :
+                            digits.hasPrefix("+" ) ? digits : "+\(digits)"
+                return formatted
+            }
+        }
 }
 
 struct ContactsView: View {
