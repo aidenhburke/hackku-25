@@ -26,8 +26,7 @@ app.post("/api/send_sms", async (req, res) => {
     });
   }
 
-  const message =
-    "A fall has been detected from ${name}'s phone. Location: ${location}";
+  const message = `A fall has been detected from ${name}'s phone. Location: ${location}`;
 
   try {
     //Send messages to all provided numbers
